@@ -333,6 +333,15 @@ ul, ol { margin: 0 0 10px; }
   font-size: 0.9rem;
 }
 
+.banda-datos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.banda-botones { display: flex; flex-wrap: wrap; gap: 8px; }
+
 .principal {
   padding-top: 20px;
   padding-bottom: 72px;
@@ -904,6 +913,14 @@ select:disabled { opacity: 0.6; cursor: not-allowed; }
   <span>Sigue trabajando: todo queda en memoria hasta que cierres la página.</span>
 </div>
 
+<div class="banda banda-datos" id="banda-datos" role="region" aria-label="Datos de ejemplo nuevos" hidden>
+  <span>Hay datos de ejemplo nuevos. Cargarlos reemplaza lo que registraste en este navegador.</span>
+  <span class="banda-botones">
+    <button type="button" class="btn btn-primario btn-chico" data-accion="datos-cargar">Cargar datos nuevos</button>
+    <button type="button" class="btn btn-sec btn-chico" data-accion="datos-seguir">Seguir con mis datos</button>
+  </span>
+</div>
+
 <main id="principal" class="principal" tabindex="-1">
   <!-- Solo se ve si el programa no corre (vistas previas de WhatsApp, correo, vista rápida, visor de Claude).
        Cuando el programa arranca, pintar() reemplaza todo el contenido de <main>. -->
@@ -969,6 +986,9 @@ const JC = (() => {
 
   const CLAVE_ALMACEN = 'joyacontrol.v1';
   const VERSION = 1;
+  // Versión de los datos de ejemplo: subir en 1 cada vez que cambien. La interfaz la compara con
+  // `S.versionDatos` para ofrecer (o cargar solos) los datos de ejemplo nuevos.
+  const VERSION_DATOS = 2;
 
   const CATEGORIAS = [
     { nombre: 'Anillo', prefijo: 'ANI', tipo: 'joya' },
@@ -977,6 +997,7 @@ const JC = (() => {
     { nombre: 'Collar', prefijo: 'COL', tipo: 'joya' },
     { nombre: 'Dije', prefijo: 'DIJ', tipo: 'joya' },
     { nombre: 'Cadena', prefijo: 'CAD', tipo: 'joya' },
+    { nombre: 'Dije y aretes', prefijo: 'JUE', tipo: 'joya' }, // juego: dije + aretes, una sola pieza
     { nombre: 'Montura', prefijo: 'MON', tipo: 'insumo' },
     { nombre: 'Esmeralda', prefijo: 'ESM', tipo: 'piedra' },
     { nombre: 'Diamante', prefijo: 'DIA', tipo: 'piedra' },
@@ -2747,13 +2768,18 @@ const JC = (() => {
   // Datos de prueba (todos ficticios), construidos con las mismas funciones de negocio
   // ---------------------------------------------------------------------------------------------
 
+  // Foto de la línea 1 de la compra real C-0001 (brazalete de filigrana), copiada tal cual de la hoja.
+  const FOTO_BRAZALETE_FILIGRANA = 'data:image/jpeg;base64,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';
+
   function datosDePrueba() {
     const S = estadoVacio();
+    S.versionDatos = VERSION_DATOS; // la interfaz decide con esto si hay datos de ejemplo más nuevos
+    S.modificado = false; // pasa a true cuando la persona registra algo (lo pone la interfaz)
     const en = (iso, fn) => conReloj(iso, fn);
 
     // Catálogos base.
     en('2026-10-01T08:00:00', () => {
-      crearProveedor(S, { nombre: 'Filigrana Shop', pais: 'Colombia', contacto: 'Mónica Pardo · 300 555 0101 · ventas@ejemplo.com', notas: 'Plata de filigrana, taller en Mompox.' });
+      crearProveedor(S, { nombre: 'Filigrana Shop', pais: 'Colombia', contacto: 'Guillermo Capacho', notas: '' });
       crearProveedor(S, { nombre: 'Esmeraldas de Muzo Ltda.', pais: 'Colombia', contacto: 'Hernán Cuervo · 310 555 0102 · muzo@ejemplo.com', notas: 'Piedras sueltas con certificado.' });
       crearProveedor(S, { nombre: 'Gems & Co. Miami', pais: 'EE. UU.', contacto: 'Daniel Brooks · +1 305 555 0103 · gems@ejemplo.com', notas: 'Factura en dólares.' });
       crearProveedor(S, { nombre: 'Platería La Candelaria', pais: 'Colombia', contacto: 'Rosa Villamil · 315 555 0104 · plateria@ejemplo.com', notas: '' });
@@ -2777,14 +2803,24 @@ const JC = (() => {
     const codigosLinea = (compraId, i) => compraTotales(S, compraId).codigosPorLinea[S.compras.find((c) => c.id === compraId).lineas[i].id];
 
     // Compras (con sus gastos asociados).
+    // C-0001: la compra real de Filigrana Shop (hoja de Camil): 12 piezas de plata con esmeralda.
+    const plataConEsmeralda = { material: 'Plata', ley: '', peso: null, piedra: 'Esmeralda', quilates: null, corte: '', tratamiento: '' };
     en('2026-10-01T10:30:00', () => crearCompra(S, {
-      proveedorId: prov('Filigrana Shop'), factura: 'FS-1024', fecha: '2026-10-01', moneda: 'COP', trm: 1,
-      ubicacionIngresoId: ubic('Caja fuerte 1'), notas: 'Compra recogida en Mompox.',
-      lineas: [{ categoria: 'Anillo', descripcion: 'Anillo de filigrana en plata 950', cantidad: 2, precio: 300000,
-        material: 'Plata', ley: '950', piedra: '', peso: 4.2, quilates: null, corte: '', tratamiento: '' }],
+      proveedorId: prov('Filigrana Shop'), factura: '289', fecha: '2026-10-01', moneda: 'COP', trm: 1,
+      ubicacionIngresoId: ubic('Caja fuerte 1'), notas: '',
+      lineas: [
+        Object.assign({ categoria: 'Brazalete', descripcion: 'Brazalete filigrana en plata con esmeralda', cantidad: 1, precio: 2800000, fotos: [FOTO_BRAZALETE_FILIGRANA] }, plataConEsmeralda),
+        Object.assign({ categoria: 'Dije y aretes', descripcion: 'Juego de rosas filigrana en plata con esmeraldas', cantidad: 1, precio: 600000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Aretes', descripcion: 'Aretes Mariposa filigrana en plata con esmeraldas', cantidad: 1, precio: 800000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Dije y aretes', descripcion: 'Juego Mariposa filigrana en plata con esmeraldas', cantidad: 1, precio: 300000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Aretes', descripcion: 'Aretes Caracol filigrana en plata con esmeraldas', cantidad: 1, precio: 300000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Aretes', descripcion: 'Aretes Flores filigrana en plata con esmeralda', cantidad: 3, precio: 300000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Anillo', descripcion: 'Anillo Cabuchón grande filigrana en plata con esmeralda', cantidad: 1, precio: 300000 }, plataConEsmeralda, { corte: 'Cabujón' }),
+        Object.assign({ categoria: 'Anillo', descripcion: 'Anillo canasta filigrana en plata con esmeralda', cantidad: 2, precio: 800000 }, plataConEsmeralda),
+        Object.assign({ categoria: 'Anillo', descripcion: 'Anillo Hojas filigrana en plata 7 esmeraldas', cantidad: 1, precio: 700000 }, plataConEsmeralda),
+      ],
       gastos: [
-        { fecha: '2026-10-01', tipo: 'Transporte', concepto: 'Viaje a Mompox para recoger la compra', monto: 60000, moneda: 'COP', notas: '' },
-        { fecha: '2026-10-01', tipo: 'Alojamiento', concepto: 'Hotel en Mompox, 1 noche', monto: 40000, moneda: 'COP', notas: '' },
+        { fecha: '2026-10-01', tipo: 'Viaje', concepto: 'Viaje a Bogotá', monto: 3000000, moneda: 'COP', notas: '' },
       ],
     }));
     en('2026-10-05T11:15:00', () => crearCompra(S, {
@@ -2836,7 +2872,7 @@ const JC = (() => {
     const tenis = codigosLinea('C-0003', 1);
     const muzo = codigosLinea('C-0002', 0);
     const monturas = codigosLinea('C-0004', 2);
-    const filigrana = codigosLinea('C-0001', 0);
+    const flores = codigosLinea('C-0001', 5); // Aretes Flores (3 unidades)
     const topo = codigosLinea('C-0003', 0);
     const esclava = codigosLinea('C-0004', 0);
 
@@ -2849,8 +2885,8 @@ const JC = (() => {
     en('2026-10-11T16:30:00', () => cambiarEstado(S, tenis[1], 'reservado', { reservadaPara: 'Emannuel Ortiz', nota: 'Separado con abono verbal' }));
     en('2026-10-12T12:10:00', () => crearVenta(S, {
       clienteId: cli('Camil Ortiz'), fecha: '2026-10-12', moneda: 'COP', trm: 1,
-      items: [{ codigo: filigrana[1], precio: 520000 }],
-      pagoInicial: { monto: 200000, medio: 'Bancolombia', referencia: 'Abono inicial' }, notas: '',
+      items: [{ codigo: flores[1], precio: 780000 }],
+      pagoInicial: { monto: 300000, medio: 'Bancolombia', referencia: 'Abono inicial' }, notas: '',
     }));
     en('2026-10-14T15:45:00', () => crearVenta(S, {
       clienteId: cli('Carmen Serrano'), fecha: '2026-10-14', moneda: 'USD', trm: 4000,
@@ -2870,7 +2906,7 @@ const JC = (() => {
 
   return {
     // Catálogos
-    CATEGORIAS, ESTADOS, MEDIOS_PAGO, TIPOS_GASTO, CLAVE_ALMACEN,
+    CATEGORIAS, ESTADOS, MEDIOS_PAGO, TIPOS_GASTO, CLAVE_ALMACEN, VERSION_DATOS,
     MATERIALES, TIPOS_PIEDRA, CORTES, TRATAMIENTOS,
     camposPorCategoria, normalizarLinea,
     // Estado y almacenamiento
@@ -3132,6 +3168,11 @@ let SEL_ORDEN = new Set(); // piezas elegidas para una orden nueva
 const FOTOS_FORM = {}; // fotos nuevas del formulario de compra, por clave de línea
 const CONT = { linea: 0, gasto: 0 }; // contadores de filas del formulario de compra
 
+// Datos de ejemplo nuevos: el navegador guarda los datos de la primera visita, así que al arrancar
+// se compara la versión guardada con JC.VERSION_DATOS (ver revisarVersionDatos).
+let pendienteDatosNuevos = false; // la banda «Hay datos de ejemplo nuevos» está visible
+let avisoArranque = '';
+
 const MOTIVOS_ALMACEN = {
   lleno: 'El almacenamiento del navegador está lleno.',
   bloqueado: 'El navegador bloquea el almacenamiento (¿ventana privada?).',
@@ -3160,6 +3201,26 @@ function pintarBandaAlmacen() {
   b.hidden = false;
 }
 
+function pintarBandaDatos() {
+  const b = $('banda-datos');
+  if (b) b.hidden = !pendienteDatosNuevos;
+}
+
+// Se ejecuta al arrancar, antes de pintar.
+//  - Datos al día (o la lógica no define versión): no se hace nada.
+//  - Versión vieja y la persona no registró nada (modificado === false): se cargan los nuevos sin preguntar.
+//  - Versión vieja y modificado o desconocido (datos de antes de este cambio): banda para elegir.
+function revisarVersionDatos() {
+  const actual = JC.VERSION_DATOS;
+  if (!Number.isFinite(actual) || (Number(S.versionDatos) || 0) >= actual) return;
+  if (S.modificado === false) {
+    S = JC.datosDePrueba();
+    avisoArranque = 'Se cargaron los datos de ejemplo nuevos.';
+  } else {
+    pendienteDatosNuevos = true;
+  }
+}
+
 // Copia de seguridad del estado para poder deshacer (todo es JSON plano).
 const instantanea = () => JSON.stringify(S);
 function restaurar(copia) { S = JSON.parse(copia); }
@@ -3167,11 +3228,14 @@ function restaurar(copia) { S = JSON.parse(copia); }
 // Aplica un cambio sobre S y lo guarda. Si algo lanza Error, devuelve S a como estaba
 // (así una operación de varios pasos nunca queda a medias) y relanza el Error.
 // Con deshacerSiLleno (fotos): si el almacenamiento está lleno, también se deshace.
+// Todo cambio hecho por la persona marca S.modificado = true (así, al arrancar, se sabe si se
+// pueden reemplazar solos los datos de ejemplo); sinMarcar lo omite (cargar datos de ejemplo).
 function cambiar(fn, o = {}) {
   const copia = instantanea();
   let resultado;
   try {
     resultado = fn();
+    if (!o.sinMarcar) S.modificado = true;
   } catch (e) {
     restaurar(copia);
     throw e;
@@ -3202,12 +3266,14 @@ function quitarAvisos(soloErrores) {
   });
 }
 
-// Dónde se muestra un aviso: si hay un diálogo abierto, dentro de él y justo encima de sus botones
-// (así nunca los tapa); si no, en el rincón de abajo (no tapa el menú principal).
-function contenedorAvisos() {
+// Dónde se muestra un aviso. Los errores, con un diálogo abierto, van dentro de él y justo encima de
+// sus botones (así nunca los tapan). Los de éxito e información van siempre en el rincón de abajo
+// (no tapa el menú principal): se crean mientras la confirmación aún está abierta y, si fueran
+// dentro del diálogo, desaparecerían con él.
+function contenedorAvisos(tipo) {
   const conf = !$('confirmacion').hidden;
   const mod = !$('modal').hidden;
-  if (!conf && !mod) return $('avisos');
+  if (tipo !== 'error' || (!conf && !mod)) return $('avisos');
   const cuerpo = conf ? $('confirmacion').querySelector('.ventana-cuerpo') : $('modal-cuerpo');
   let c = cuerpo.querySelector('.avisos-dialogo');
   if (!c) {
@@ -3221,7 +3287,7 @@ function contenedorAvisos() {
 }
 
 function aviso(texto, tipo = 'ok') {
-  const cont = contenedorAvisos();
+  const cont = contenedorAvisos(tipo);
   if (!cont) return;
   // Un mismo mensaje no se repite apilado.
   Array.from(cont.children).forEach((a) => {
@@ -3490,19 +3556,41 @@ function vistaInicio() {
     </section>`;
 }
 
+// Reemplaza todo por los datos de ejemplo de la versión actual (datosDePrueba deja modificado = false
+// y versionDatos al día) y vuelve a Inicio.
+function cargarDatosDeEjemplo(mensaje) {
+  cambiar(() => { S = JC.datosDePrueba(); }, { sinMarcar: true });
+  SEL_INV = new Set(); SEL_ORDEN = new Set();
+  Object.keys(FILTROS).forEach((k) => { Object.keys(FILTROS[k]).forEach((c) => { FILTROS[k][c] = ''; }); });
+  pendienteDatosNuevos = false;
+  pintarBandaDatos();
+  aviso(mensaje);
+  ir('inicio');
+}
+
 ACCIONES['restablecer'] = () => {
   confirmar({
     titulo: 'Restablecer datos de prueba',
     texto: 'Se borrará todo lo que hayas registrado y se volverán a cargar los datos de prueba. No se puede deshacer.',
     aceptar: 'Restablecer',
     peligro: true,
-  }, () => {
-    cambiar(() => { S = JC.datosDePrueba(); });
-    SEL_INV = new Set(); SEL_ORDEN = new Set();
-    Object.keys(FILTROS).forEach((k) => { Object.keys(FILTROS[k]).forEach((c) => { FILTROS[k][c] = ''; }); });
-    aviso('Datos de prueba restablecidos.');
-    ir('inicio');
-  });
+  }, () => cargarDatosDeEjemplo('Datos de prueba restablecidos.'));
+};
+
+ACCIONES['datos-cargar'] = () => {
+  confirmar({
+    titulo: 'Cargar datos nuevos',
+    texto: 'Se reemplaza todo lo que registraste en este navegador por los datos de ejemplo nuevos. No se puede deshacer.',
+    aceptar: 'Cargar datos nuevos',
+    peligro: true,
+  }, () => cargarDatosDeEjemplo('Se cargaron los datos de ejemplo nuevos.'));
+};
+ACCIONES['datos-seguir'] = () => {
+  // Se queda con lo suyo y no se vuelve a preguntar: la versión guardada pasa a ser la actual.
+  cambiar(() => { S.versionDatos = JC.VERSION_DATOS; }, { sinMarcar: true });
+  pendienteDatosNuevos = false;
+  pintarBandaDatos();
+  aviso('Seguirás con tus datos. No se volverá a preguntar por estos datos nuevos.', 'info');
 };
 
 // Compra de prueba del criterio 1/2: Filigrana Shop, 2 anillos × 300.000 y un transporte de 100.000.
@@ -5573,8 +5661,11 @@ document.addEventListener('keydown', (ev) => {
 });
 
 function iniciar() {
+  revisarVersionDatos();
   persistir(); // deja a la vista el estado real del almacenamiento (aviso si no guarda)
+  pintarBandaDatos();
   pintar();
+  if (avisoArranque) aviso(avisoArranque, 'info');
 }
 
 // Para quien depure o pruebe desde la consola: lectura del estado actual.
