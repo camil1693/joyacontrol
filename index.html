@@ -2140,7 +2140,7 @@ const JC = (() => {
     const cat = categoria(datos.categoriaResultado);
     if (!cat) throw new Error('Elige la categoría de la joya que se va a fabricar.');
     const ubicacionId = texto(datos.ubicacionId);
-    if (!buscar(S.ubicaciones, ubicacionId)) throw new Error('Elige la ubicación de la orden (taller).');
+    if (!buscar(S.ubicaciones, ubicacionId)) throw new Error('Elige la ubicación de la orden.');
     const fecha = texto(datos.fecha) || hoy();
     if (!fechaValida(fecha)) throw new Error('La fecha de la orden no es válida (usa AAAA-MM-DD).');
     const manoObra = datos.manoObra == null || datos.manoObra === '' ? 0 : numero(datos.manoObra);
@@ -2757,17 +2757,19 @@ const JC = (() => {
       crearProveedor(S, { nombre: 'Esmeraldas de Muzo Ltda.', pais: 'Colombia', contacto: 'Hernán Cuervo · 310 555 0102 · muzo@ejemplo.com', notas: 'Piedras sueltas con certificado.' });
       crearProveedor(S, { nombre: 'Gems & Co. Miami', pais: 'EE. UU.', contacto: 'Daniel Brooks · +1 305 555 0103 · gems@ejemplo.com', notas: 'Factura en dólares.' });
       crearProveedor(S, { nombre: 'Platería La Candelaria', pais: 'Colombia', contacto: 'Rosa Villamil · 315 555 0104 · plateria@ejemplo.com', notas: '' });
-      const b1 = crearBodega(S, { nombre: 'Bodega Principal', ciudad: 'Bogotá' });
-      const b2 = crearBodega(S, { nombre: 'Taller', ciudad: 'Bogotá' });
-      const b3 = crearBodega(S, { nombre: 'Oficina Miami', ciudad: 'Miami' });
+      const b1 = crearBodega(S, { nombre: 'Bodega casa Lina', ciudad: 'Medellín' });
+      const b2 = crearBodega(S, { nombre: 'Bodega Guatape', ciudad: 'Guatapé' });
+      const b3 = crearBodega(S, { nombre: 'Bodega EEUU', ciudad: 'Stratford' });
       crearUbicacion(S, { bodegaId: b1.id, nombre: 'Caja fuerte 1' });
       crearUbicacion(S, { bodegaId: b1.id, nombre: 'Vitrina de exhibición' });
-      crearUbicacion(S, { bodegaId: b2.id, nombre: 'Mesa de fabricación' });
+      crearUbicacion(S, { bodegaId: b2.id, nombre: 'Caja fuerte' });
       crearUbicacion(S, { bodegaId: b3.id, nombre: 'Caja de seguridad' });
-      crearCliente(S, { nombre: 'María Fernanda Ríos', documento: 'CC 52.000.101', telefono: '300 555 0111', email: 'maria.rios@ejemplo.com', ciudad: 'Bogotá', notas: 'Compra para regalos de aniversario.' });
-      crearCliente(S, { nombre: 'Carlos Andrés Gómez', documento: 'CC 71.000.202', telefono: '311 555 0122', email: 'carlos.gomez@ejemplo.com', ciudad: 'Medellín', notas: '' });
-      crearCliente(S, { nombre: 'Laura Restrepo', documento: 'CC 1.000.303', telefono: '320 555 0133', email: 'laura.restrepo@ejemplo.com', ciudad: 'Cartagena', notas: 'Le interesan los brazaletes.' });
-      crearCliente(S, { nombre: 'Jennifer Smith', documento: 'Pasaporte 000000404', telefono: '+1 305 555 0144', email: 'jennifer.smith@ejemplo.com', ciudad: 'Miami', notas: 'Paga en dólares.' });
+      crearCliente(S, { nombre: 'Camil Ortiz', documento: 'CC 80.000.101', telefono: '300 555 0111', email: 'camil.ortiz@ejemplo.com', ciudad: 'Bogotá', notas: 'Compra para regalos de aniversario.' });
+      crearCliente(S, { nombre: 'Christian Ortiz', documento: 'CC 71.000.202', telefono: '311 555 0122', email: 'christian.ortiz@ejemplo.com', ciudad: 'Medellín', notas: '' });
+      crearCliente(S, { nombre: 'Emannuel Ortiz', documento: 'CC 1.000.303', telefono: '320 555 0133', email: 'emannuel.ortiz@ejemplo.com', ciudad: 'Cartagena', notas: 'Le interesan los brazaletes.' });
+      crearCliente(S, { nombre: 'Carmen Serrano', documento: 'Pasaporte 000000404', telefono: '+1 305 555 0144', email: 'carmen.serrano@ejemplo.com', ciudad: 'Miami', notas: 'Paga en dólares.' });
+      crearCliente(S, { nombre: 'Javier Ortiz', documento: 'CC 98.000.505', telefono: '315 555 0155', email: 'javier.ortiz@ejemplo.com', ciudad: 'Medellín', notas: '' });
+      crearCliente(S, { nombre: 'Melissa Torres', documento: 'CC 1.020.000.606', telefono: '301 555 0166', email: 'melissa.torres@ejemplo.com', ciudad: 'Bogotá', notas: '' });
     });
     const prov = (nombre) => S.proveedores.find((p) => p.nombre === nombre).id;
     const ubic = (nombre) => S.ubicaciones.find((u) => u.nombre === nombre).id;
@@ -2841,22 +2843,22 @@ const JC = (() => {
     en('2026-10-11T09:00:00', () => trasladar(S, tenis[0], ubic('Vitrina de exhibición'), 'Para exhibir en la vitrina'));
     en('2026-10-11T14:00:00', () => crearOrden(S, {
       nombre: 'Anillo solitario con esmeralda de Muzo', categoriaResultado: 'Anillo', joyero: 'Maestro Jairo Peña',
-      ubicacionId: ubic('Mesa de fabricación'), fecha: '2026-10-11', manoObra: 450000,
+      ubicacionId: ubic('Caja fuerte'), fecha: '2026-10-11', manoObra: 450000,
       piezas: [muzo[0], monturas[0]], notas: 'Engastar la esmeralda en la montura.',
     }));
-    en('2026-10-11T16:30:00', () => cambiarEstado(S, tenis[1], 'reservado', { reservadaPara: 'Laura Restrepo', nota: 'Separado con abono verbal' }));
+    en('2026-10-11T16:30:00', () => cambiarEstado(S, tenis[1], 'reservado', { reservadaPara: 'Emannuel Ortiz', nota: 'Separado con abono verbal' }));
     en('2026-10-12T12:10:00', () => crearVenta(S, {
-      clienteId: cli('María Fernanda Ríos'), fecha: '2026-10-12', moneda: 'COP', trm: 1,
+      clienteId: cli('Camil Ortiz'), fecha: '2026-10-12', moneda: 'COP', trm: 1,
       items: [{ codigo: filigrana[1], precio: 520000 }],
       pagoInicial: { monto: 200000, medio: 'Bancolombia', referencia: 'Abono inicial' }, notas: '',
     }));
     en('2026-10-14T15:45:00', () => crearVenta(S, {
-      clienteId: cli('Jennifer Smith'), fecha: '2026-10-14', moneda: 'USD', trm: 4000,
+      clienteId: cli('Carmen Serrano'), fecha: '2026-10-14', moneda: 'USD', trm: 4000,
       items: [{ codigo: topo[0], precio: 780 }],
       pagoInicial: { monto: 780, medio: 'PayPal', referencia: 'Pago completo' }, notas: 'Envío a Miami.',
     }));
     const v3 = en('2026-10-15T10:05:00', () => crearVenta(S, {
-      clienteId: cli('Carlos Andrés Gómez'), fecha: '2026-10-15', moneda: 'COP', trm: 1,
+      clienteId: cli('Christian Ortiz'), fecha: '2026-10-15', moneda: 'COP', trm: 1,
       items: [{ codigo: esclava[0], precio: 320000 }],
       pagoInicial: { monto: 100000, medio: 'Addi', referencia: 'Primer abono' }, notas: '',
     }));
