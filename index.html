@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M9 4h14l7 8-14 17L2 12z' fill='%230f6b4f'/%3E%3Cpath d='M2 12h28M9 4l7 25 7-25' fill='none' stroke='%23d9c27a' stroke-width='1.5'/%3E%3C/svg%3E">
-<title>JoyaControl</title>
+<title>León Ortiz</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
@@ -34,6 +34,7 @@
   --dorado: #a47a1e;
   --dorado-suave: #f6edd1;
   --dorado-texto: #5f4710;
+  --dorado-lema: #8f6a17;
   --foco: #b8891c;
 
   --peligro: #a32d2d;
@@ -92,6 +93,7 @@
     --dorado: #d4a73c;
     --dorado-suave: #33290f;
     --dorado-texto: #ecd08a;
+    --dorado-lema: #d4a73c;
     --foco: #e6bf5c;
 
     --peligro: #f09792;
@@ -143,6 +145,7 @@
   --dorado: #d4a73c;
   --dorado-suave: #33290f;
   --dorado-texto: #ecd08a;
+  --dorado-lema: #d4a73c;
   --foco: #e6bf5c;
 
   --peligro: #f09792;
@@ -272,13 +275,28 @@ ul, ol { margin: 0 0 10px; }
   padding: 0;
   margin: 8px 0;
   color: var(--acento);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+.marca-nombre {
   font-family: var(--f-serif);
   font-weight: 600;
   font-size: 1.75rem;
   font-variant-numeric: lining-nums;
   line-height: 1.1;
   letter-spacing: 0.01em;
-  cursor: pointer;
+}
+.marca-lema {
+  font-family: var(--f-texto);
+  font-size: 0.62rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--dorado-lema);
 }
 .nav-principal {
   display: flex;
@@ -915,7 +933,7 @@ select:disabled { opacity: 0.6; cursor: not-allowed; }
 
 <header class="cabecera">
   <div class="cabecera-fila">
-    <button type="button" class="marca" data-accion="ir" data-destino="inicio" aria-label="JoyaControl, ir al inicio" data-t-aria>JoyaControl</button>
+    <button type="button" class="marca" data-accion="ir" data-destino="inicio" aria-label="León Ortiz, ir al inicio" data-t-aria><span class="marca-nombre">León Ortiz</span><span class="marca-lema">Jewelry and Emeralds</span></button>
     <nav class="nav-principal" aria-label="Secciones" data-t-aria>
       <button type="button" class="nav-item" data-accion="seccion" data-seccion="inicio" data-t>Inicio</button>
       <button type="button" class="nav-item" data-accion="seccion" data-seccion="compras-gastos" data-t>Compras y gastos</button>
@@ -945,22 +963,22 @@ select:disabled { opacity: 0.6; cursor: not-allowed; }
   <!-- Solo se ve si el programa no corre (vistas previas de WhatsApp, correo, vista rápida, visor de Claude).
        Cuando el programa arranca, pintar() reemplaza todo el contenido de <main>. -->
   <div class="panel" id="sin-programa">
-    <h1>JoyaControl no arrancó en esta vista</h1>
+    <h1>León Ortiz no arrancó en esta vista</h1>
     <p>Estás viendo una vista previa: muestra el archivo, pero no ejecuta el programa que tiene dentro. Pasa con la vista previa de WhatsApp o del correo, con la vista rápida del Mac y con el visor de archivos de Claude.</p>
     <p><strong>Cómo abrirlo bien:</strong></p>
     <ol>
-      <li>Guarda el archivo <code>joyacontrol.html</code> en tu computador, por ejemplo en Descargas o en el Escritorio.</li>
+      <li>Guarda el archivo HTML en tu computador, por ejemplo en Descargas o en el Escritorio.</li>
       <li>Ábrelo con un navegador: clic derecho sobre el archivo → «Abrir con» → Chrome, Edge, Safari o Firefox.</li>
       <li>Si ves la pantalla de Inicio con cifras y la guía de prueba, ya está funcionando.</li>
     </ol>
     <p>Úsalo en un computador. En el celular, las vistas previas no lo ejecutan.</p>
   </div>
   <div class="panel" id="sin-programa-en" lang="en">
-    <h1>JoyaControl did not start in this view</h1>
+    <h1>León Ortiz did not start in this view</h1>
     <p>You are looking at a preview: it shows the file but does not run the program inside it. This happens with WhatsApp or email previews, Quick Look on the Mac and Claude's file viewer.</p>
     <p><strong>How to open it properly:</strong></p>
     <ol>
-      <li>Save the file <code>joyacontrol.html</code> on your computer, for example in Downloads or on the Desktop.</li>
+      <li>Save the HTML file on your computer, for example in Downloads or on the Desktop.</li>
       <li>Open it with a browser: right-click the file → "Open with" → Chrome, Edge, Safari or Firefox.</li>
       <li>If you see the Home screen with figures and the test guide, it is working.</li>
     </ol>
@@ -1505,7 +1523,7 @@ if (typeof module !== 'undefined') module.exports = I18N;
 I18N.agregar('en', {
   // ---- Menú, cabecera y bandas (cuerpo.html) ----
   'Saltar al contenido': 'Skip to content',
-  'JoyaControl, ir al inicio': 'JoyaControl, go to Home',
+  'León Ortiz, ir al inicio': 'León Ortiz, go to Home',
   'Secciones': 'Sections',
   'Pestañas de la sección': 'Section tabs',
   'Inicio': 'Home',
@@ -4510,7 +4528,7 @@ if (typeof module !== 'undefined') module.exports = JC;
 if (typeof JC === 'undefined') {
   const avisar = () => {
     const m = document.getElementById('principal');
-    if (m) m.textContent = 'No se cargó la lógica de JoyaControl (logica.js). Revisa la construcción del archivo. / JoyaControl logic (logica.js) did not load. Check how the file was built.';
+    if (m) m.textContent = 'No se cargó la lógica de León Ortiz (logica.js). Revisa la construcción del archivo. / León Ortiz logic (logica.js) did not load. Check how the file was built.';
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', avisar);
   else avisar();

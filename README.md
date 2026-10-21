@@ -1,4 +1,4 @@
-# JoyaControl
+# León Ortiz · Jewelry and Emeralds
 
 Prototipo de gestión de joyas y piedras preciosas: compras con gastos repartidos por unidad,
 inventario con código único por pieza, fabricación, ventas con abonos y cuentas por cobrar.
@@ -6,7 +6,7 @@ inventario con código único por pieza, fabricación, ventas con abonos y cuent
 **Abrir:** https://camil1693.github.io/joyacontrol/
 
 - Funciona en el navegador del celular o del computador, sin instalar nada.
-- Trae datos de ejemplo inventados. Lo que cada persona registra se guarda solo en su propio
+- Trae datos de ejemplo (la compra C-0001 de Filigrana Shop es real; el resto es inventado). Lo que cada persona registra se guarda solo en su propio
   navegador: nadie más lo ve y no se envía a ningún servidor.
 - Los medios de pago (PayPal, Affirm, Mercado Pago, Addi, Bank of America, Bancolombia) son solo
   una etiqueta: no se conecta con ninguna entidad.
